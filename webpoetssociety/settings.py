@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'editora.apps.EditoraConfig',
     'edicao.apps.EdicaoConfig',
     'usuario.apps.UsuarioConfig',
+    'avaliacao.apps.AvaliacaoConfig',
+    'colecao.apps.ColecaoConfig',
 ]
 
 MIDDLEWARE = [
