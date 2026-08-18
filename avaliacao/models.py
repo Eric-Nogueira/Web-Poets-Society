@@ -7,3 +7,4 @@ class Avaliacao(models.Model):
     comentario = models.TextField()
     data_avaliacao = models.DateField(auto_now_add=True)
     curtida = models.BooleanField(default=False)
+    livro = models.ForeignKey('livros.livro', on_delete=models.CASCADE)
