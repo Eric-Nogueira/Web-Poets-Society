@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'usuario.apps.UsuarioConfig',
     'avaliacao.apps.AvaliacaoConfig',
     'colecao.apps.ColecaoConfig',
+    'capitulo.apps.CapituloConfig',
+    'livro_colecao.apps.LivroColecaoConfig',
+    'livro_usuario.apps.LivroUsuarioConfig',
 ]
 
 MIDDLEWARE = [
