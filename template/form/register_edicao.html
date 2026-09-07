@@ -1,0 +1,435 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Web Poets Society - Registro de Edição">
+  
+  <title>Nova Edição | Web Poets Society</title>
+
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendors/bootstrap-icons/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+  <div class="admin-shell">
+
+```
+<div class="sidebar-backdrop" data-sidebar-close></div>
+
+<!-- SIDEBAR -->
+<aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
+
+  <div class="sidebar-header">
+
+    <a class="brand-mark" href="index.html" aria-label="Web Poets Society">
+
+      <span class="brand-icon">
+        <i class="bi bi-grid-1x2-fill" aria-hidden="true"></i>
+      </span>
+
+      <span class="brand-copy">
+        <span class="brand-title">Web Poets</span>
+        <span class="brand-subtitle">Society</span>
+      </span>
+
+    </a>
+
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <a class="nav-link" href="index.html">
+      <span class="nav-icon">
+        <i class="bi bi-speedometer2"></i>
+      </span>
+      <span class="nav-text">Dashboard</span>
+    </a>
+
+    <div style="padding: 0.4rem 0.9rem 0.1rem; color: #9ca3af; font-size: 0.72rem; font-weight: 800; text-transform: uppercase;">
+      Conteúdo
+    </div>
+
+    <a class="nav-link" href="livro-form.html">
+      <span class="nav-icon">
+        <i class="bi bi-book"></i>
+      </span>
+      <span class="nav-text">Novo Livro</span>
+    </a>
+
+    <a class="nav-link" href="capitulo-form.html">
+      <span class="nav-icon">
+        <i class="bi bi-journal-text"></i>
+      </span>
+      <span class="nav-text">Novo Capítulo</span>
+    </a>
+
+    <a class="nav-link" href="colecao-form.html">
+      <span class="nav-icon">
+        <i class="bi bi-collection"></i>
+      </span>
+      <span class="nav-text">Nova Coleção</span>
+    </a>
+
+    <a class="nav-link active" href="#" aria-current="page">
+      <span class="nav-icon">
+        <i class="bi bi-bookmark-plus"></i>
+      </span>
+      <span class="nav-text">Nova Edição</span>
+    </a>
+
+    <a class="nav-link" href="editora-form.html">
+      <span class="nav-icon">
+        <i class="bi bi-building"></i>
+      </span>
+      <span class="nav-text">Nova Editora</span>
+    </a>
+
+    <a class="nav-link" href="profile.html">
+      <span class="nav-icon">
+        <i class="bi bi-person-badge"></i>
+      </span>
+      <span class="nav-text">Perfil</span>
+    </a>
+
+    <div style="padding: 0.4rem 0.9rem 0.1rem; color: #9ca3af; font-size: 0.72rem; font-weight: 800; text-transform: uppercase;">
+      Administração
+    </div>
+
+    <a class="nav-link" href="users.html">
+      <span class="nav-icon">
+        <i class="bi bi-people"></i>
+      </span>
+      <span class="nav-text">Usuários</span>
+    </a>
+
+    <a class="nav-link" href="add-user.html">
+      <span class="nav-icon">
+        <i class="bi bi-person-plus"></i>
+      </span>
+      <span class="nav-text">Novo Usuário</span>
+    </a>
+
+  </nav>
+
+  <div class="sidebar-user">
+
+    <img class="avatar-img avatar-md sidebar-user-avatar"
+         src="{% static 'images/avatar/avatar.jpg' %}"
+         alt="Administrador">
+
+    <strong>Administrador</strong>
+    <small>Web Poets Society</small>
+
+  </div>
+
+  <div class="sidebar-footer">
+
+    <span class="status-dot"></span>
+
+    <span class="sidebar-footer-text">
+      Sistema funcionando
+    </span>
+
+  </div>
+
+</aside>
+
+
+<!-- CONTEÚDO PRINCIPAL -->
+<div class="admin-main">
+
+  <!-- NAVBAR -->
+  <nav class="navbar admin-navbar navbar-expand bg-white">
+
+    <div class="container-fluid px-3 px-lg-4">
+
+      <button class="sidebar-toggle"
+              type="button"
+              data-sidebar-toggle
+              aria-controls="adminSidebar"
+              aria-expanded="true"
+              aria-label="Abrir menu">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+      </button>
+
+      <form class="d-none d-md-flex ms-3 flex-grow-1" role="search">
+
+        <input class="form-control search-input"
+               type="search"
+               placeholder="Buscar usuários, livros e capítulos"
+               aria-label="Buscar">
+
+      </form>
+
+      <div class="navbar-actions ms-auto">
+
+        <!-- TEMA -->
+        <button class="icon-button theme-toggle"
+                type="button"
+                data-theme-toggle
+                aria-label="Trocar tema">
+
+          <i class="bi bi-moon-stars" data-theme-icon></i>
+
+        </button>
+
+
+        <!-- NOTIFICAÇÕES -->
+        <div class="dropdown">
+
+          <button class="icon-button"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  aria-label="Notificações">
+
+            <span class="notification-dot"></span>
+            <i class="bi bi-bell"></i>
+
+          </button>
+
+          <div class="dropdown-menu dropdown-menu-end notification-menu">
+
+            <div class="dropdown-header fw-bold text-body">
+              Notificações
+            </div>
+
+            <a class="dropdown-item" href="#">
+
+              <span class="notification-title">
+                Nenhuma nova notificação
+              </span>
+
+            </a>
+
+          </div>
+
+        </div>
+
+
+        <!-- PERFIL -->
+        <div class="dropdown">
+
+          <button class="profile-button dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false">
+
+            <img class="avatar-img avatar-sm"
+                 src="{% static 'images/avatar/avatar.jpg' %}"
+                 alt="Foto do usuário">
+
+            <span class="profile-name d-none d-sm-inline">
+              Administrador
+            </span>
+
+          </button>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+
+            <li>
+              <a class="dropdown-item" href="profile.html">
+                Perfil
+              </a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="settings.html">
+                Configurações
+              </a>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="login.html">
+                Sair
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </nav>
+
+
+  <!-- CONTEÚDO -->
+  <main class="dashboard-content">
+
+    <div class="container-fluid px-3 px-lg-4 py-4">
+
+      <!-- TÍTULO -->
+      <div class="page-heading">
+
+        <div class="page-heading-copy">
+
+          <span class="page-icon">
+            <i class="bi bi-bookmark-plus"></i>
+          </span>
+
+          <div>
+
+            <p class="eyebrow mb-1">
+              Conteúdo
+            </p>
+
+            <h1 class="h3 mb-1">
+              Nova Edição
+            </h1>
+
+            <p class="text-muted mb-0">
+              Cadastre uma nova edição de um livro na Web Poets Society.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="row g-4">
+
+        <!-- FORMULÁRIO -->
+        <div class="col-lg-8">
+
+          <section class="panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <h2 class="h5 mb-1">
+                  Dados da edição
+                </h2>
+
+                <p class="text-muted mb-0">
+                  Campos marcados com * são obrigatórios.
+                </p>
+
+              </div>
+
+            </div>
+
+            <form method="post">
+
+              {% csrf_token %}
+
+              {{ form.as_p }}
+
+              <div class="d-flex flex-wrap gap-2 justify-content-end mt-4">
+
+                <button class="btn btn-outline-secondary" type="reset">
+                  Limpar
+                </button>
+
+                <button class="btn btn-primary" type="submit">
+
+                  <i class="bi bi-bookmark-check"></i>
+                  Registrar Edição
+
+                </button>
+
+              </div>
+
+            </form>
+
+          </section>
+
+        </div>
+
+
+        <!-- COLUNA LATERAL -->
+        <div class="col-lg-4">
+
+          <section class="panel">
+
+            <div class="panel-header">
+
+              <h2 class="h6 mb-0">
+                Dica
+              </h2>
+
+            </div>
+
+            <p class="text-muted mb-3">
+              Informe o título da edição, a editora, a data de publicação,
+              o número de páginas e o livro correspondente.
+            </p>
+
+            <p class="text-muted mb-3">
+              A editora e o livro devem ser selecionados entre os registros
+              já cadastrados no sistema.
+            </p>
+
+            <a class="btn btn-light w-100" href="livro-form.html">
+
+              <i class="bi bi-book"></i>
+              Ver livros cadastrados
+
+            </a>
+
+          </section>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer class="admin-footer">
+
+    <div class="container-fluid px-3 px-lg-4">
+
+      <span>
+        Copyright 2026 Web Poets Society.
+      </span>
+
+      <span>
+        Sistema de gerenciamento literário.
+      </span>
+
+      <span>
+        Registro de edições.
+      </span>
+
+    </div>
+
+  </footer>
+
+</div>
+```
+
+  </div>
+
+  <!-- SCRIPTS -->
+
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+  <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+
+</html>

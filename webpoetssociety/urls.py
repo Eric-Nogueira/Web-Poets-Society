@@ -26,4 +26,5 @@ urlpatterns = [
     path('home/', usuario_views.home, name='home'),
     path('usuario/', include('usuario.urls')),
     path('editora/', include('editora.urls')),
+    path('edicao/', include('edicao.urls')),
 ]

@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from editora.models import Editora
+from edicao.models import Edicao
 
 from .forms import UsuarioForm
 from .models import Usuario
@@ -19,6 +20,10 @@ def home(request):
         'usuarios_recentes': Usuario.objects.order_by(
             '-date_joined'
         ),
+
+        'edicoes_recentes': Edicao.objects.order_by(
+            '-id'
+        )
 
     }
 
