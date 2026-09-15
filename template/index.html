@@ -1,231 +1,10 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% block title %}Início | Web Poets Society{% endblock %}
+{% block footer_middle %}Painel inicial.{% endblock %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <meta name="description" content="Web Poets Society - Dashboard">
-
-  <title>Home | Web Poets Society</title>
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-  <link rel="stylesheet" href="{% static 'vendors/bootstrap-icons/bootstrap-icons.css' %}">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-</head>
-
-
-<body>
-
-  <div class="admin-shell">
-
-    <!-- BACKDROP -->
-    <div class="sidebar-backdrop" data-sidebar-close></div>
-
-
-    <!-- =========================
-         SIDEBAR
-    ========================== -->
-
-    <aside class="admin-sidebar" id="adminSidebar" aria-label="Navegação principal">
-
-
-      <!-- LOGO -->
-
-      <div class="sidebar-header">
-
-        <a class="brand-mark" href="{% url 'home' %}" aria-label="Web Poets Society">
-
-          <span class="brand-icon">
-
-            <i class="bi bi-book-half" aria-hidden="true">
-            </i>
-
-          </span>
-
-
-          <span class="brand-copy">
-
-            <span class="brand-title">
-              Web Poets
-            </span>
-
-            <span class="brand-subtitle">
-              Society
-            </span>
-
-          </span>
-
-        </a>
-
-      </div>
-
-
-
-      <!-- MENU -->
-
-      <nav class="sidebar-nav">
-
-
-    </aside>
-
-
-
-    <!-- =========================
-         ÁREA PRINCIPAL
-    ========================== -->
-
-    <div class="admin-main">
-
-
-      <!-- =========================
-             NAVBAR
-        ========================== -->
-
-      <nav class="navbar admin-navbar navbar-expand bg-white">
-
-        <div class="container-fluid px-3 px-lg-4">
-
-
-          <!-- BOTÃO SIDEBAR -->
-
-          <button class="sidebar-toggle" type="button" data-sidebar-toggle aria-controls="adminSidebar"
-            aria-expanded="true" aria-label="Abrir menu">
-
-            <span></span>
-            <span></span>
-            <span></span>
-
-          </button>
-
-
-
-          <!-- BUSCA -->
-
-          <form class="d-none d-md-flex ms-3 flex-grow-1" role="search">
-
-            <input class="form-control search-input" type="search" placeholder="Buscar livros, capítulos ou usuários"
-              aria-label="Buscar">
-
-          </form>
-
-
-
-          <!-- AÇÕES -->
-
-          <div class="navbar-actions ms-auto">
-
-
-            <!-- TEMA -->
-
-            <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="Trocar tema">
-
-              <i class="bi bi-moon-stars" data-theme-icon>
-              </i>
-
-            </button>
-
-
-
-            <!-- NOTIFICAÇÕES -->
-
-            <div class="dropdown">
-
-
-              <button class="icon-button" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                aria-label="Notificações">
-
-                <span class="notification-dot"></span>
-
-                <i class="bi bi-bell" aria-hidden="true">
-                </i>
-
-              </button>
-
-
-
-              <div class="dropdown-menu
-                                    dropdown-menu-end
-                                    notification-menu">
-
-                <div class="dropdown-header
-                                        fw-bold
-                                        text-body">
-
-                  Notificações
-
-                </div>
-
-
-                <a class="dropdown-item" href="#">
-
-                  <span class="notification-title">
-
-                    Bem-vindo à Web Poets Society!
-
-                  </span>
-
-                  <span class="notification-time">
-
-                    Agora
-
-                  </span>
-
-                </a>
-
-              </div>
-
-
-            </div>
-
-
-
-            <!-- PERFIL -->
-
-            <div class="dropdown">
-
-
-              <button class="profile-button
-                                       dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-
-
-                <img class="avatar-img avatar-sm" src="{% static 'images/avatar/avatar.jpg' %}" alt="Foto do usuário">
-
-
-                <span class="profile-name d-none d-sm-inline">
-
-                  {{ user.username }}
-
-                </span>
-
-
-              </button>
-
-
-            </div>
-
-
-          </div>
-
-
-        </div>
-
-
-      </nav>
-
-
-
-      <!-- =========================
-             CONTEÚDO DO DASHBOARD
-        ========================== -->
-
-      <main class="dashboard-content">
-
-
+{% block content %}
         <div class="container-fluid px-3 px-lg-4 py-4">
 
 
@@ -417,7 +196,10 @@
 
                               <div class="fw-semibold">
 
-                                {{ usuario.username }}
+                                <a href="{% url 'perfil_publico' usuario.username %}"
+                                   class="text-decoration-none">
+                                  {{ usuario.username }}
+                                </a>
 
                               </div>
 
@@ -653,7 +435,7 @@
                         <td>
 
 
-                          {% if editora.is_active %}
+                          {% if editora.resposavel.is_active %}
 
 
                           <span class="badge text-bg-success">
@@ -839,7 +621,7 @@
 
                         <td>
 
-                          {{ edicao.editora.nome }}
+                          {{ edicao.editora }}
 
                         </td>
 
@@ -890,28 +672,5 @@
             </div>
           </div>
         </div>
-      </main>
-      <!-- =========================
-             FOOTER
-        ========================== -->
-      <footer class="admin-footer">
-        <div class="container-fluid px-3 px-lg-4">
-          <span>
-            © 2026 Web Poets Society.
-          </span>
-          <span>
-            Sistema de gerenciamento literário.
-          </span>
-          <span>
-            Dashboard.
-          </span>
-        </div>
-      </footer>
-    </div>
-  </div>
-  <!-- JAVASCRIPT -->
-  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'js/main.js' %}"></script>
-</body>
-
-</html>
+      
+{% endblock %}

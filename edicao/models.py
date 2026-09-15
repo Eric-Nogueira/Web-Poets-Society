@@ -6,7 +6,9 @@ class Edicao(models.Model):
     editora = models.ForeignKey('editora.Editora', on_delete=models.CASCADE)
     data_publicacao = models.DateField()
     numero_paginas = models.IntegerField()
-    pdf = models.FileField(upload_to='pdfs/')
+    # Sem blank=True o campo era obrigatorio no model mas ficava de fora
+    # do formulario, entao a edicao era salva com o PDF vazio na marra.
+    pdf = models.FileField(upload_to='pdfs/', blank=True)
     livro = models.ForeignKey('livros.Livro', on_delete=models.CASCADE)
 
     def __str__(self):

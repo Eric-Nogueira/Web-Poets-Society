@@ -1,3 +1,20 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
 
-# Create your views here.
+from .forms import CapituloForm
+
+
+@login_required
+def criar_capitulo(request):
+    """Mostra o formulario de cadastro de Capitulo e salva quando enviado."""
+    if request.method == 'POST':
+        form = CapituloForm(request.POST)
+        if form.is_valid():
+            capitulo = form.save()
+            messages.success(request, f'Capitulo "{capitulo.titulo}" cadastrado com sucesso!')
+            return redirect('capitulo:criar')
+    else:
+        form = CapituloForm()
+
+    return render(request, 'form/capitulo_form.html', {'form': form})

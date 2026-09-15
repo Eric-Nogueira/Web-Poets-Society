@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Web Poets Society">
+  <title>{% block title %}Web Poets Society{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendors/bootstrap-icons/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+  {% with atual=request.resolver_match.view_name %}
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+
+    <!-- =========================
+         MENU LATERAL
+    ========================== -->
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Menu principal">
+
+      <div class="sidebar-header">
+        <a class="brand-mark" href="{% url 'home' %}" aria-label="Web Poets Society">
+          <span class="brand-icon"><i class="bi bi-book-half" aria-hidden="true"></i></span>
+          <span class="brand-copy">
+            <span class="brand-title">Web Poets</span>
+            <span class="brand-subtitle">Society</span>
+          </span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="nav-link {% if atual == 'home' %}active{% endif %}" href="{% url 'home' %}"
+           {% if atual == 'home' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
+          <span class="nav-text">Início</span>
+        </a>
+
+        <a class="nav-link {% if atual == 'livros:lista' %}active{% endif %}" href="{% url 'livros:lista' %}"
+           {% if atual == 'livros:lista' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-journals" aria-hidden="true"></i></span>
+          <span class="nav-text">Livros</span>
+        </a>
+
+        <a class="nav-link {% if atual == 'livros:criar' %}active{% endif %}" href="{% url 'livros:criar' %}"
+           {% if atual == 'livros:criar' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-book" aria-hidden="true"></i></span>
+          <span class="nav-text">Cadastrar livro</span>
+        </a>
+
+        <a class="nav-link {% if atual == 'capitulo:criar' %}active{% endif %}" href="{% url 'capitulo:criar' %}"
+           {% if atual == 'capitulo:criar' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-journal-text" aria-hidden="true"></i></span>
+          <span class="nav-text">Cadastrar capítulo</span>
+        </a>
+
+        <a class="nav-link {% if atual == 'colecao:criar' %}active{% endif %}" href="{% url 'colecao:criar' %}"
+           {% if atual == 'colecao:criar' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-collection" aria-hidden="true"></i></span>
+          <span class="nav-text">Criar coleção</span>
+        </a>
+
+        <a class="nav-link {% if atual == 'editora_criar' %}active{% endif %}" href="{% url 'editora_criar' %}"
+           {% if atual == 'editora_criar' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-building" aria-hidden="true"></i></span>
+          <span class="nav-text">Cadastrar editora</span>
+        </a>
+
+        <a class="nav-link {% if atual == 'edicao_criar' %}active{% endif %}" href="{% url 'edicao_criar' %}"
+           {% if atual == 'edicao_criar' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-bookmark-plus" aria-hidden="true"></i></span>
+          <span class="nav-text">Cadastrar edição</span>
+        </a>
+
+        <a class="nav-link {% if atual == 'perfil' %}active{% endif %}" href="{% url 'perfil' %}"
+           {% if atual == 'perfil' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-person-badge" aria-hidden="true"></i></span>
+          <span class="nav-text">Meu perfil</span>
+        </a>
+
+        <a class="nav-link {% if atual == 'usuario_criar' %}active{% endif %}" href="{% url 'usuario_criar' %}"
+           {% if atual == 'usuario_criar' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-person-plus" aria-hidden="true"></i></span>
+          <span class="nav-text">Novo usuário</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user">
+        <img class="avatar-img avatar-md sidebar-user-avatar" src="{% static 'images/avatar/avatar.jpg' %}"
+             alt="Foto do usuário">
+        <strong>{{ user.get_username|default:"Visitante" }}</strong>
+        <small>{% if user.is_authenticated %}Sessão ativa{% else %}Não conectado{% endif %}</small>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        <span class="sidebar-footer-text">Web Poets Society</span>
+      </div>
+    </aside>
+
+    <!-- =========================
+         ÁREA PRINCIPAL
+    ========================== -->
+    <div class="admin-main">
+
+      <nav class="navbar admin-navbar navbar-expand bg-white">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <button class="sidebar-toggle" type="button" data-sidebar-toggle aria-controls="adminSidebar"
+                  aria-expanded="true" aria-label="Abrir menu">
+            <span></span><span></span><span></span>
+          </button>
+
+          <form class="d-none d-md-flex ms-3 flex-grow-1" role="search">
+            <input class="form-control search-input" type="search"
+                   placeholder="Buscar livros, capítulos ou usuários" aria-label="Buscar">
+          </form>
+
+          <div class="navbar-actions ms-auto">
+
+            <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="Trocar tema">
+              <i class="bi bi-moon-stars" data-theme-icon aria-hidden="true"></i>
+            </button>
+
+            <div class="dropdown">
+              <button class="icon-button" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                      aria-label="Notificações">
+                <span class="notification-dot"></span>
+                <i class="bi bi-bell" aria-hidden="true"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-end notification-menu">
+                <div class="dropdown-header fw-bold text-body">Notificações</div>
+                <a class="dropdown-item" href="{% url 'livros:criar' %}">
+                  <span class="notification-title">Cadastre um novo livro</span>
+                  <span class="notification-time">Agora</span>
+                </a>
+                <a class="dropdown-item" href="{% url 'colecao:criar' %}">
+                  <span class="notification-title">Organize seus livros em coleções</span>
+                  <span class="notification-time">Agora</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- O botão de perfil abria um dropdown que não existia. -->
+            <div class="dropdown">
+              <button class="profile-button dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                <img class="avatar-img avatar-sm" src="{% static 'images/avatar/avatar.jpg' %}"
+                     alt="Foto do usuário">
+                <span class="profile-name d-none d-sm-inline">{{ user.get_username|default:"Visitante" }}</span>
+              </button>
+
+              <ul class="dropdown-menu dropdown-menu-end">
+                {% if user.is_authenticated %}
+                  <li><a class="dropdown-item" href="{% url 'perfil' %}">Meu perfil</a></li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'perfil_publico' user.get_username %}">
+                      Ver como público
+                    </a>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <!-- Logout exige POST no Django 5+; um link simples dava erro 405. -->
+                    <form method="post" action="{% url 'logout' %}" class="px-0">
+                      {% csrf_token %}
+                      <button class="dropdown-item" type="submit">Sair</button>
+                    </form>
+                  </li>
+                {% else %}
+                  <li><a class="dropdown-item" href="{% url 'login' %}">Entrar</a></li>
+                  <li><a class="dropdown-item" href="{% url 'usuario_criar' %}">Criar conta</a></li>
+                {% endif %}
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </nav>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4 pt-3">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        {% block content %}{% endblock %}
+      </main>
+
+      <footer class="admin-footer">
+        <div class="container-fluid px-3 px-lg-4">
+          <span>Web Poets Society</span>
+          <span>{% block footer_middle %}{% endblock %}</span>
+          <span>
+            Template base: <a target="_blank" class="fw-bold text-success"
+              href="https://themewagon.com">ThemeWagon</a>
+          </span>
+        </div>
+      </footer>
+    </div>
+  </div>
+  {% endwith %}
+
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>
