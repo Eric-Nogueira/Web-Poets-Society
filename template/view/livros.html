@@ -36,7 +36,11 @@
         <tbody>
           {% for livro in livros %}
             <tr>
-              <td>{{ livro.titulo }}</td>
+              <td>
+                <a href="{% url 'capitulo:lista' livro.id %}">
+                  {{ livro.titulo }}
+                </a>
+              </td>
               <td>{{ livro.genero }}</td>
               <td>
                 {% for lu in livro.livro_usuario_set.all %}

@@ -24,19 +24,9 @@ class CapituloForm(forms.ModelForm):
             'comentario': 'Comentário',
         }
         widgets = {
-            'titulo': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ex.: O primeiro verso',
-                'maxlength': 200,
-            }),
-            'num_de_pag': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ex.: 12',
-                'min': 1,
-            }),
-            'comentario': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 4,
-                'placeholder': 'Observações sobre este capítulo...',
-            }),
+            'titulo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex.: O primeiro verso', 'maxlength': 200,}),
+
+            'num_de_pag': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ex.: 12','min': 1,}),
+
+            'comentario': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Observações sobre este capítulo...',}),
         }

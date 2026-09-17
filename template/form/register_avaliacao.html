@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Fazer Avaliação | Web Poets Society{% endblock %}
+{% block footer_middle %}Cadastro de avaliações.{% endblock %}
+
+{% block content %}
+    <div class="container-fluid px-3 px-lg-4 py-4">
+
+      <!-- TÍTULO -->
+      <div class="page-heading">
+
+        <div class="page-heading-copy">
+
+          <span class="page-icon">
+            <i class="bi bi-bookmark-plus"></i>
+          </span>
+
+          <div>
+
+            <p class="eyebrow mb-1">
+              Conteúdo
+            </p>
+
+            <h1 class="h3 mb-1">
+              Nova Avaliação
+            </h1>
+
+            <p class="text-muted mb-0">
+              Cadastre uma nova avaliação de um livro na Web Poets Society.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="row g-4">
+
+        <!-- FORMULÁRIO -->
+        <div class="col-lg-8">
+
+          <section class="panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <h2 class="h5 mb-1">
+                  Dados da avaliação
+                </h2>
+
+                <p class="text-muted mb-0">
+                  Campos marcados com * são obrigatórios.
+                </p>
+
+              </div>
+
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+
+              {% csrf_token %}
+
+              {{ form.as_p }}
+
+              <div class="d-flex flex-wrap gap-2 justify-content-end mt-4">
+
+                <button class="btn btn-outline-secondary" type="reset">
+                  Limpar
+                </button>
+
+                <button class="btn btn-primary" type="submit">
+
+                  <i class="bi bi-bookmark-check"></i>
+                  Registrar Avaliação
+
+                </button>
+
+              </div>
+
+            </form>
+
+          </section>
+
+        </div>
+
+
+        <!-- COLUNA LATERAL -->
+        <div class="col-lg-4">
+
+          <section class="panel">
+
+            <div class="panel-header">
+
+              <h2 class="h6 mb-0">
+                Dica
+              </h2>
+
+            </div>
+
+            <p class="text-muted mb-3">
+              Informe a nota, o comentário, a data da avaliação,
+              o número de curtidas e o livro correspondente.
+            </p>
+
+            <p class="text-muted mb-3">
+              O livro deve ser selecionado entre os registros
+              já cadastrados no sistema.
+            </p>
+
+            <a class="btn btn-light w-100" href="{% url 'livros:lista' %}">
+
+              <i class="bi bi-book"></i>
+              Ver livros cadastrados
+
+            </a>
+
+          </section>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  
+{% endblock %}

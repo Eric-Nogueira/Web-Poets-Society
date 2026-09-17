@@ -31,6 +31,7 @@ urlpatterns = [
     path('livros/', include('livros.urls')),
     path('colecao/', include('colecao.urls')),
     path('capitulo/', include('capitulo.urls')),
+    path('avaliacao/', include('avaliacao.urls')),
 ]
 
 if settings.DEBUG:

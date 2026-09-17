@@ -6,7 +6,6 @@ from .models import Edicao
 class EdicaoForm(forms.ModelForm):
     class Meta:
         model = Edicao
-        # O campo 'pdf' faltava aqui: nao dava para enviar o arquivo.
         fields = ['titulo', 'editora', 'data_publicacao', 'numero_paginas', 'livro', 'pdf']
         labels = {
             'titulo': 'Titulo',
