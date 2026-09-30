@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Coleção | Web Poets Society{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-3 px-lg-4 py-4">
+
+  <div class="page-heading">
+
+    <div class="page-heading-copy">
+
+      <span class="page-icon">
+        <i class="bi bi-pencil" aria-hidden="true"></i>
+      </span>
+
+      <div>
+
+        <p class="eyebrow mb-1">Acervo</p>
+
+        <h1 class="h3 mb-1">
+          Editar Coleção
+        </h1>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="row g-4">
+
+    <div class="col-lg-8">
+
+      <section class="panel">
+
+        <form method="POST">
+
+          {% csrf_token %}
+
+          {{ form.as_p }}
+
+          <div class="d-flex gap-2 justify-content-end mt-4">
+
+            <a
+              href="{% url 'colecao:lista' %}"
+              class="btn btn-secondary"
+            >
+              Cancelar
+            </a>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+            >
+              Salvar alterações
+            </button>
+
+          </div>
+
+        </form>
+
+      </section>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

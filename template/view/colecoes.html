@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Coleções | Web Poets Society{% endblock %}
+{% block footer_middle %}Acervo de coleções.{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-3 px-lg-4 py-4">
+
+  <div class="page-heading">
+
+    <div class="page-heading-copy">
+
+      <span class="page-icon">
+        <i class="bi bi-collection" aria-hidden="true"></i>
+      </span>
+
+      <div>
+
+        <p class="eyebrow mb-1">Acervo</p>
+
+        <h1 class="h3 mb-1">
+          Coleções cadastradas
+        </h1>
+
+        <p class="text-muted mb-0">
+          Todas as coleções da Web Poets Society.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="heading-actions">
+
+      <a
+        class="btn btn-primary"
+        href="{% url 'colecao:criar' %}"
+      >
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Nova Coleção
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <section class="panel">
+
+    <div class="table-responsive">
+
+      <table class="table align-middle">
+
+        <thead>
+
+          <tr>
+
+            <th scope="col">Título</th>
+
+            <th scope="col">Coleções filhas</th>
+
+            <th scope="col">Ações</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          {% for colecao in colecoes %}
+
+            <tr>
+
+              <td>
+                <strong>
+                  {{ colecao.titulo }}
+                </strong>
+              </td>
+
+
+              <td>
+
+                {% for filha in colecao.colecoes_filhas.all %}
+
+                  <span class="badge text-bg-secondary">
+                    {{ filha.titulo }}
+                  </span>
+
+                {% empty %}
+
+                  <span class="text-muted">
+                    Nenhuma
+                  </span>
+
+                {% endfor %}
+
+              </td>
+
+
+              <td>
+
+                <a
+                  href="{% url 'colecao:editar' colecao.id %}"
+                  class="btn btn-sm btn-warning"
+                >
+                  Editar
+                </a>
+
+                <a
+                  href="{% url 'colecao:deletar' colecao.id %}"
+                  class="btn btn-sm btn-danger"
+                >
+                  Deletar
+                </a>
+
+              </td>
+
+            </tr>
+
+          {% empty %}
+
+            <tr>
+
+              <td
+                colspan="3"
+                class="text-center text-muted py-4"
+              >
+                Nenhuma coleção cadastrada ainda.
+              </td>
+
+            </tr>
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>
+
+{% endblock %}

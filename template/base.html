@@ -52,6 +52,12 @@
           <span class="nav-text">Avaliações</span>
         </a>
 
+        <a class="nav-link {% if atual == 'colecao:lista' %}active{% endif %}" href="{% url 'colecao:lista' %}"
+           {% if atual == 'colecao:lista' %}aria-current="page"{% endif %}>
+          <span class="nav-icon"><i class="bi bi-collection" aria-hidden="true"></i></span>
+          <span class="nav-text">Coleções</span>
+        </a>
+
         <a class="nav-link {% if atual == 'livros:criar' %}active{% endif %}" href="{% url 'livros:criar' %}"
            {% if atual == 'livros:criar' %}aria-current="page"{% endif %}>
           <span class="nav-icon"><i class="bi bi-book" aria-hidden="true"></i></span>
