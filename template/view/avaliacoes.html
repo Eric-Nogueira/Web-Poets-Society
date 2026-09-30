@@ -56,6 +56,8 @@
 
             <th>Curtidas</th>
 
+            <th>Ações</th>
+
           </tr>
 
         </thead>
@@ -118,6 +120,22 @@
 
             </td>
 
+            <td>
+
+              <a
+                href="{% url 'avaliacao:editar' avaliacao.id %}"
+                class="btn btn-sm btn-warning"
+              >
+                Editar
+              </a>
+
+              <a
+                href="{% url 'avaliacao:deletar' avaliacao.id %}"
+                class="btn btn-sm btn-danger"
+              >
+                Deletar
+              </a>
+
           </tr>
 
           {% empty %}
@@ -125,7 +143,7 @@
           <tr>
 
             <td
-              colspan="5"
+              colspan="6"
               class="text-center text-muted py-4"
             >
 

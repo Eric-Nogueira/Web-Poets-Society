@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Deletar Capítulo</h2>
+
+    <p>
+        Tem certeza que deseja deletar o capítulo
+        <strong>{{ capitulo.titulo }}</strong>?
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <button type="submit" class="btn btn-danger">
+            Deletar
+        </button>
+
+        <a
+            href="{% url 'capitulo:lista' capitulo.livro.id %}"
+            class="btn btn-secondary"
+        >
+            Cancelar
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

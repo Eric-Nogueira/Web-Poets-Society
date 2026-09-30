@@ -4,8 +4,8 @@ from . import views
 
 urlpatterns = [
     path('register/', views.register, name='usuario_criar'),
+    path('editar/<int:usuario_id>/', views.editar_usuario, name='editar_usuario'),
+    path('deletar/<int:usuario_id>/', views.deletar_usuario, name='deletar_usuario'),
     path('perfil/', views.perfil, name='perfil'),
-    # Faltava a rota do perfil publico: o template perfil-publico.html
-    # existia mas nao tinha view nem URL.
     path('<str:username>/', views.perfil_publico, name='perfil_publico'),
 ]

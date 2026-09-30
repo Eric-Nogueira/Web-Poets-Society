@@ -7,4 +7,6 @@ app_name = 'capitulo'
 urlpatterns = [
     path('novo/', views.criar_capitulo, name='criar'),
     path('livro/<int:livro_id>/', views.lista_capitulos, name='lista'),
+    path('editar/<int:capitulo_id>/', views.editar_capitulo, name='editar'),
+    path('deletar/<int:capitulo_id>/', views.deletar_capitulo, name='deletar'),
 ]

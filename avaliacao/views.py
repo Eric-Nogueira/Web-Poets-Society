@@ -33,23 +33,65 @@ def curtir_avaliacao(request, avaliacao_id):
 
     return redirect('avaliacao:lista')
 
+@login_required
+def editar_avaliacao(request, avaliacao_id):
+    avaliacao = get_object_or_404(
+        Avaliacao,
+        id=avaliacao_id
+    )
+
+    if request.method == 'POST':
+        form = AvaliacaoForm(
+            request.POST,
+            instance=avaliacao
+        )
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request,
+                'Avaliação atualizada com sucesso!'
+            )
+
+            return redirect('avaliacao:lista')
+
+    else:
+        form = AvaliacaoForm(
+            instance=avaliacao
+        )
+
+    return render(
+        request,
+        'form/editar_avaliacao.html',
+        {
+            'form': form,
+            'avaliacao': avaliacao
+        }
+    )
 
 
+@login_required
+def deletar_avaliacao(request, avaliacao_id):
+    avaliacao = get_object_or_404(
+        Avaliacao,
+        id=avaliacao_id
+    )
 
+    if request.method == 'POST':
+        avaliacao.delete()
 
+        messages.success(
+            request,
+            'Avaliação deletada com sucesso!'
+        )
 
+        return redirect('avaliacao:lista')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return render(
+        request,
+        'form/deletar_avaliacao.html',
+        {
+            'avaliacao': avaliacao
+        }
+    )

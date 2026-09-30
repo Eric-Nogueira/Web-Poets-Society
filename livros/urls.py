@@ -10,4 +10,6 @@ app_name = 'livros'
 urlpatterns = [
     path('', views.lista_livros, name='lista'),
     path('novo/', views.criar_livro, name='criar'),
+    path('editar/<int:livro_id>/', views.editar_livro, name='editar'),
+    path('deletar/<int:livro_id>/', views.deletar_livro, name='deletar'),
 ]

@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 
 from capitulo.models import Capitulo
@@ -9,7 +9,7 @@ from edicao.models import Edicao
 from editora.models import Editora
 from livros.models import Livro
 
-from .forms import UsuarioForm
+from .forms import UsuarioForm, UsuarioEditarForm
 from .models import Usuario
 
 
@@ -106,3 +106,42 @@ def perfil_publico(request, username):
     context['e_meu_perfil'] = usuario.pk == request.user.pk
 
     return render(request, 'view/perfil-publico.html', context)
+
+@login_required
+def editar_usuario(request, usuario_id):
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+
+    if request.method == 'POST':
+        form = UsuarioEditarForm(request.POST, instance=usuario)
+
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = UsuarioEditarForm(instance=usuario)
+
+    return render(
+        request,
+        'form/editar_usuario.html',
+        {
+            'form': form,
+            'usuario': usuario
+        }
+    )
+
+
+@login_required
+def deletar_usuario(request, usuario_id):
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+
+    if request.method == 'POST':
+        usuario.delete()
+        return redirect('home')
+
+    return render(
+        request,
+        'form/deletar_usuario.html',
+        {
+            'usuario': usuario
+        }
+    )

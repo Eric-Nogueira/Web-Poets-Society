@@ -36,3 +36,74 @@ def lista_capitulos(request, livro_id):
             'capitulos': capitulos,
         }
     )
+
+@login_required
+def editar_capitulo(request, capitulo_id):
+    capitulo = get_object_or_404(
+        Capitulo,
+        id=capitulo_id
+    )
+
+    if request.method == 'POST':
+        form = CapituloForm(
+            request.POST,
+            instance=capitulo
+        )
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request,
+                f'Capítulo "{capitulo.titulo}" atualizado com sucesso!'
+            )
+
+            return redirect(
+                'capitulo:lista',
+                livro_id=capitulo.livro.id
+            )
+
+    else:
+        form = CapituloForm(
+            instance=capitulo
+        )
+
+    return render(
+        request,
+        'form/editar_capitulo.html',
+        {
+            'form': form,
+            'capitulo': capitulo
+        }
+    )
+
+
+@login_required
+def deletar_capitulo(request, capitulo_id):
+    capitulo = get_object_or_404(
+        Capitulo,
+        id=capitulo_id
+    )
+
+    livro_id = capitulo.livro.id
+
+    if request.method == 'POST':
+        capitulo.delete()
+
+        messages.success(
+            request,
+            'Capítulo deletado com sucesso!'
+        )
+
+        return redirect(
+            'capitulo:lista',
+            livro_id=livro_id
+        )
+
+    return render(
+        request,
+        'form/deletar_capitulo.html',
+        {
+            'capitulo': capitulo
+        }
+    )

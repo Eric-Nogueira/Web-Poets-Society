@@ -159,6 +159,8 @@
 
                         <th>Status</th>
 
+                        <th>Ações</th>
+
                       </tr>
 
 
@@ -265,6 +267,18 @@
 
                         </td>
 
+                        <td>
+                            <a href="{% url 'editar_usuario' usuario.id %}"
+                              class="btn btn-sm btn-warning">
+                                Editar
+                            </a>
+
+                            <a href="{% url 'deletar_usuario' usuario.id %}"
+                              class="btn btn-sm btn-danger">
+                                Deletar
+                            </a>
+                        </td>
+
 
                       </tr>
 
@@ -356,6 +370,8 @@
                         <th>Ano de Fundação</th>
 
                         <th>Atividade</th>
+
+                        <th>Ações</th>
 
                       </tr>
 
@@ -460,6 +476,17 @@
 
                         </td>
 
+                        <td>
+                            <a href="{% url 'editar_editora' editora.id %}"
+                              class="btn btn-sm btn-warning">
+                                Editar
+                            </a>
+
+                            <a href="{% url 'deletar_editora' editora.id %}"
+                              class="btn btn-sm btn-danger">
+                                Deletar
+                            </a>
+                        </td>
 
                       </tr>
 
@@ -552,6 +579,8 @@
 
                         <th>Livro</th>
 
+                        <th>Ações</th>
+
                       </tr>
 
 
@@ -632,6 +661,18 @@
                           {{ edicao.livro.titulo }}
 
                         </td>
+
+                        <td>
+                            <a href="{% url 'editar_edicao' edicao.id %}"
+                              class="btn btn-sm btn-warning">
+                                Editar
+                            </a>
+
+                            <a href="{% url 'deletar_edicao' edicao.id %}"
+                              class="btn btn-sm btn-danger">
+                                Deletar
+                            </a>
+                      </td>
 
 
                       </tr>
