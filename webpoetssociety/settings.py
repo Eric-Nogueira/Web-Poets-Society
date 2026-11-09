@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rolepermissions',  
 
     # Apps criados
 
@@ -143,3 +144,4 @@ MESSAGE_TAGS = {message_constants.ERROR: 'danger'}
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
+ROLEPERMISSIONS_MODULE = 'permissoes.roles'

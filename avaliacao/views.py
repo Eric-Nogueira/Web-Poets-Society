@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from avaliacao.forms import AvaliacaoForm
 from avaliacao.models import Avaliacao
+from rolepermissions.checkers import has_permission, has_object_permission
 
 @login_required
 def register_avaliacao(request):
@@ -39,8 +40,16 @@ def editar_avaliacao(request, avaliacao_id):
         Avaliacao,
         id=avaliacao_id
     )
+    user = request.user
 
     if request.method == 'POST':
+        if has_permission(user, 'editar_qualquer_avaliacao'):
+            pass
+        elif has_permission(user, 'editar_proprio_avaliacao') and has_object_permission('gerenciar_avaliacao', user, avaliacao):
+            pass
+        else:
+            messages.error(request, 'Você não tem permissão para editar essa avaliação.')
+            return redirect('livros:lista')
         form = AvaliacaoForm(
             request.POST,
             instance=avaliacao
@@ -77,8 +86,16 @@ def deletar_avaliacao(request, avaliacao_id):
         Avaliacao,
         id=avaliacao_id
     )
+    user = request.user
 
     if request.method == 'POST':
+        if has_permission(user, 'excluir_qualquer_avaliacao'):
+            pass
+        elif has_permission(user, 'excluir_proprio_avaliacao') and has_object_permission('gerenciar_colecao', user, avaliacao):
+            pass
+        else:
+            messages.error(request, 'Você não tem permissão para excluir essa avaliação.')
+            return redirect('livros:lista')
         avaliacao.delete()
 
         messages.success(

@@ -11,6 +11,8 @@ from colecao.models import Colecao
 from .forms import LivroForm
 from .models import Livro
 
+from rolepermissions.checkers import has_permission, has_object_permission
+
 
 @login_required
 def lista_livros(request):
@@ -56,6 +58,14 @@ def editar_livro(request, livro_id):
 
     if request.method == 'POST':
         form = LivroForm(request.POST, instance=livro)
+        user = request.user
+        
+        if has_permission(user, 'editar_qualquer_livro') or (has_permission(user, 'editar_proprio_livro') and Livro_Usuario.objects.filter(livro=livro, autor=user).exists()):
+            pass
+        
+        else:
+            messages.error(request, 'Você não tem permissão para editar este livro.')
+            return redirect('livros:lista')
 
         if form.is_valid():
             form.save()
@@ -117,15 +127,14 @@ def editar_livro(request, livro_id):
 @login_required
 def deletar_livro(request, livro_id):
     livro = get_object_or_404(Livro, id=livro_id)
-
+    user = request.user
+    
     if request.method == 'POST':
-        livro.delete()
-
-        messages.success(
-            request,
-            'Livro deletado com sucesso!'
-        )
-
+        if has_permission(user, 'excluir_qualquer_livro') or (has_permission(user, 'excluir_proprio_livro') and Livro_Usuario.objects.filter(livro=livro, autor=user).exists()):
+            livro.delete()
+            messages.success(request, 'Livro deletado com sucesso!')
+        else:
+            messages.error(request, 'Você não tem permissão para deletar este livro.')
         return redirect('livros:lista')
 
     return render(

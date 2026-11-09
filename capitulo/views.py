@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from livros.models import Livro
 from .models import Capitulo
 from .forms import CapituloForm
+from rolepermissions.checkers import has_permission, has_object_permission
 
 
 @login_required
@@ -43,8 +44,18 @@ def editar_capitulo(request, capitulo_id):
         Capitulo,
         id=capitulo_id
     )
+    user = request.user
 
     if request.method == 'POST':
+        if has_permission(user, 'editar_qualquer_capitulo'):
+            pass
+        
+        elif has_permission(user, 'editar_qualquer_capitulo') and has_object_permission('gerenciar_capitulo', user, capitulo):
+            pass
+        else:
+            messages.error(request, 'Você não tem permissão para editar esse capítulo.')
+            return redirect('livros:lista')
+            
         form = CapituloForm(
             request.POST,
             instance=capitulo
@@ -84,10 +95,19 @@ def deletar_capitulo(request, capitulo_id):
         Capitulo,
         id=capitulo_id
     )
+    user = request.user
 
     livro_id = capitulo.livro.id
 
     if request.method == 'POST':
+        if has_permission(user, 'excluir_qualquer_capitulo'):
+            pass
+        
+        elif has_permission(user, 'excluir_proprio_capitulo') and has_object_permission('gerenciar_capitulo', user, capitulo):
+            pass
+        else:
+            messages.error(request, 'Você não tem permissão para excluir esse capítulo.')
+            return redirect('livros:lista')
         capitulo.delete()
 
         messages.success(

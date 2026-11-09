@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -11,6 +12,8 @@ from livros.models import Livro
 
 from .forms import UsuarioForm, UsuarioEditarForm
 from .models import Usuario
+
+from rolepermissions.checkers import has_object_permission, has_permission
 
 
 @login_required
@@ -110,9 +113,18 @@ def perfil_publico(request, username):
 @login_required
 def editar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
+    user = request.user
 
     if request.method == 'POST':
         form = UsuarioEditarForm(request.POST, instance=usuario)
+        
+        if has_permission(user, 'editar_qualquer_usuario'):
+            pass
+        elif has_permission(user, 'editar_proprio_usuario') and has_object_permission('gerenciar_usuario', user, usuario):
+            pass
+        else:
+            messages.error(request, 'Você não tem permissão para editar este perfil.')
+            return redirect('home')
 
         if form.is_valid():
             form.save()
@@ -133,8 +145,16 @@ def editar_usuario(request, usuario_id):
 @login_required
 def deletar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
+    user = request.user
 
     if request.method == 'POST':
+        if has_permission(user, 'excluir_qualquer_usuario'):
+            pass
+        elif has_permission(user, 'excluir_proprio_usuario') and has_object_permission('gerenciar_usuario', user, usuario):
+            pass
+        else:
+            messages.error(request, 'Você não tem permissão para excluir este perfil.')
+            return redirect('home')
         usuario.delete()
         return redirect('home')
 

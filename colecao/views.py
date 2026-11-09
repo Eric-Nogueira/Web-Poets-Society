@@ -5,6 +5,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from .forms import ColecaoForm
 from .models import Colecao
 
+from rolepermissions.checkers import has_permission, has_object_permission
+
 
 @login_required
 def criar_colecao(request):
@@ -47,8 +49,17 @@ def editar_colecao(request, colecao_id):
         Colecao,
         id=colecao_id
     )
+    user = request.user
 
     if request.method == 'POST':
+        if has_permission(user, 'editar_qualquer_colecao'):
+            pass
+        elif has_permission(user, 'editar_proprio_colecao') and has_object_permission('gerenciar_colecao', user, colecao):
+            pass
+        else:
+            messages.error(request, 'Você não tem permissão para editar essa coleção.')
+            return redirect('livros:lista')
+        
         form = ColecaoForm(
             request.POST,
             instance=colecao
@@ -84,8 +95,16 @@ def deletar_colecao(request, colecao_id):
         Colecao,
         id=colecao_id
     )
+    user = request.user
 
     if request.method == 'POST':
+        if has_permission(user, 'excluir_qualquer_colecao'):
+            pass
+        elif has_permission(user, 'excluir_proprio_colecao') and has_object_permission('gerenciar_colecao', user, colecao):
+            pass
+        else:
+            messages.error(request, 'Você não tem permissão para deletar essa coleção.')
+            return redirect('livros:lista')
         colecao.delete()
 
         messages.success(
