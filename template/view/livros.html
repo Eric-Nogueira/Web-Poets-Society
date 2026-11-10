@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load permission_tags %} <!-- ADICIONADO AQUI -->
 
 {% block title %}Livros | Web Poets Society{% endblock %}
 {% block footer_middle %}Acervo de livros.{% endblock %}
@@ -16,9 +17,12 @@
       </div>
     </div>
     <div class="heading-actions">
+      <!-- Só mostra o botão de criar se tiver alguma permissão de gerenciar livros -->
+      {% if request.user|can:'editar_qualquer_livro' or request.user|can:'editar_proprio_livro' %}
       <a class="btn btn-primary" href="{% url 'livros:criar' %}">
         <i class="bi bi-plus-lg" aria-hidden="true"></i> Novo Livro
       </a>
+      {% endif %}
     </div>
   </div>
 
@@ -58,12 +62,28 @@
                 {% endfor %}
               </td>
               <td>
-                <a href="{% url 'livros:editar' livro.id %}" class="btn btn-sm btn-warning">
-                  Editar
-                </a>
-                <a href="{% url 'livros:deletar' livro.id %}" class="btn btn-sm btn-danger">
-                  Deletar
-                </a>
+                <!-- VERIFICAÇÃO DE PERMISSÕES AQUI -->
+                {% if request.user|can:'editar_qualquer_livro' or request.user|can:'excluir_qualquer_livro' %}
+                    <!-- Editor/Admin pode tudo -->
+                    <a href="{% url 'livros:editar' livro.id %}" class="btn btn-sm btn-warning">
+                      Editar
+                    </a>
+                    <a href="{% url 'livros:deletar' livro.id %}" class="btn btn-sm btn-danger">
+                      Deletar
+                    </a>
+                {% elif request.user|can:'editar_proprio_livro' or request.user|can:'excluir_proprio_livro' %}
+                    <!-- Autor: Vê os botões, mas a View garantirá que ele só altere os dele -->
+                    <a href="{% url 'livros:editar' livro.id %}" class="btn btn-sm btn-warning">
+                      Editar
+                    </a>
+                    <a href="{% url 'livros:deletar' livro.id %}" class="btn btn-sm btn-danger">
+                      Deletar
+                    </a>
+                {% else %}
+                    <!-- Sem permissão -->
+                    <span class="text-muted small">-</span>
+                {% endif %}
+              </td>
             </tr>
           {% empty %}
             <tr>
