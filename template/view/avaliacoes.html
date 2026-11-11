@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load permission_tags %}
 
 {% block title %}Avaliações | Web Poets Society{% endblock %}
 {% block footer_middle %}Avaliações dos livros.{% endblock %}
@@ -49,10 +48,10 @@
               </a>
             </td>
             <td>
-              {% if request.user|can:'editar_qualquer_avaliacao' or request.user|can:'excluir_qualquer_avaliacao' %}
+              {% if perms.livros.editar_qualquer_avaliacao or perms.livros.excluir_qualquer_avaliacao %}
                 <a href="{% url 'avaliacao:editar' avaliacao.id %}" class="btn btn-sm btn-warning">Editar</a>
                 <a href="{% url 'avaliacao:deletar' avaliacao.id %}" class="btn btn-sm btn-danger">Deletar</a>
-              {% elif request.user|can:'editar_proprio_avaliacao' or request.user|can:'excluir_proprio_avaliacao' %}
+              {% elif perms.livros.editar_proprio_avaliacao or perms.livros.excluir_proprio_avaliacao %}
                 <a href="{% url 'avaliacao:editar' avaliacao.id %}" class="btn btn-sm btn-warning">Editar</a>
                 <a href="{% url 'avaliacao:deletar' avaliacao.id %}" class="btn btn-sm btn-danger">Deletar</a>
               {% else %}

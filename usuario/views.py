@@ -113,18 +113,23 @@ def perfil_publico(request, username):
 @login_required
 def editar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
-    user = request.user
 
     if request.method == 'POST':
+
+        user = request.user
+
+        tem_permissao_qualquer = user.has_perm('usuarios.editar_qualquer_usuario')
+    
+    # Verificação direta: o usuário logado é o mesmo do perfil que está tentando editar?
+        e_o_proprio_usuario = (user == usuario)
+    
+        tem_permissao_proprio = user.has_perm('usuarios.editar_proprio_usuario') and e_o_proprio_usuario
+
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+            messages.error(request, "Você só pode editar o seu próprio perfil.")
+            return redirect('home') # Ou para a página de perfil público
+
         form = UsuarioEditarForm(request.POST, instance=usuario)
-        
-        if has_permission(user, 'editar_qualquer_usuario'):
-            pass
-        elif has_permission(user, 'editar_proprio_usuario') and has_object_permission('gerenciar_usuario', user, usuario):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para editar este perfil.')
-            return redirect('home')
 
         if form.is_valid():
             form.save()
@@ -145,16 +150,21 @@ def editar_usuario(request, usuario_id):
 @login_required
 def deletar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
-    user = request.user
+    
 
     if request.method == 'POST':
-        if has_permission(user, 'excluir_qualquer_usuario'):
-            pass
-        elif has_permission(user, 'excluir_proprio_usuario') and has_object_permission('gerenciar_usuario', user, usuario):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para excluir este perfil.')
-            return redirect('home')
+        user = request.user
+        
+        tem_permissao_qualquer = user.has_perm('usuarios.excluir_qualquer_usuario')
+            
+            # Verificação direta: o usuário logado é o mesmo do perfil que está tentando editar?
+        e_o_proprio_usuario = (user == usuario)
+            
+        tem_permissao_proprio = user.has_perm('usuarios.excluir_proprio_usuario') and e_o_proprio_usuario
+        
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+                    messages.error(request, "Você só pode excluir o seu próprio perfil.")
+                    return redirect('home')
         usuario.delete()
         return redirect('home')
 

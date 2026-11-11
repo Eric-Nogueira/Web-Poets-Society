@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 
+from livro_usuario.models import Livro_Usuario
+
 from .forms import ColecaoForm
 from .models import Colecao
 
@@ -49,17 +51,23 @@ def editar_colecao(request, colecao_id):
         Colecao,
         id=colecao_id
     )
-    user = request.user
 
     if request.method == 'POST':
-        if has_permission(user, 'editar_qualquer_colecao'):
-            pass
-        elif has_permission(user, 'editar_proprio_colecao') and has_object_permission('gerenciar_colecao', user, colecao):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para editar essa coleção.')
-            return redirect('livros:lista')
-        
+         user = request.user
+
+    tem_permissao_qualquer = user.has_perm('colecao.editar_qualquer_colecao')
+    
+    # Navegação UML: Colecao -> Livro_Colecao -> Livro -> Livro_Usuario
+    e_autor_na_colecao = Livro_Usuario.objects.filter(
+        livro__livro_colecao__colecao=colecao, 
+        autor=user
+    ).exists()
+    
+    tem_permissao_proprio = user.has_perm('colecao.editar_proprio_colecao') and e_autor_na_colecao
+
+    if not (tem_permissao_qualquer or tem_permissao_proprio):
+        messages.error(request, "Você não tem permissão para editar esta coleção.")
+        return redirect('home')
         form = ColecaoForm(
             request.POST,
             instance=colecao
@@ -95,16 +103,23 @@ def deletar_colecao(request, colecao_id):
         Colecao,
         id=colecao_id
     )
-    user = request.user
 
     if request.method == 'POST':
-        if has_permission(user, 'excluir_qualquer_colecao'):
-            pass
-        elif has_permission(user, 'excluir_proprio_colecao') and has_object_permission('gerenciar_colecao', user, colecao):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para deletar essa coleção.')
-            return redirect('livros:lista')
+        user = request.user
+        
+        tem_permissao_qualquer = user.has_perm('colecao.excluir_qualquer_colecao')
+            
+            # Navegação UML: Colecao -> Livro_Colecao -> Livro -> Livro_Usuario
+        e_autor_na_colecao = Livro_Usuario.objects.filter(
+                livro__livro_colecao__colecao=colecao, 
+                autor=user
+            ).exists()
+            
+        tem_permissao_proprio = user.has_perm('colecao.excluir_proprio_colecao') and e_autor_na_colecao
+        
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+                messages.error(request, "Você não tem permissão para excluir esta coleção.")
+                return redirect('home')
         colecao.delete()
 
         messages.success(

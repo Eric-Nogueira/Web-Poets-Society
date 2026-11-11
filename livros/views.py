@@ -11,8 +11,6 @@ from colecao.models import Colecao
 from .forms import LivroForm
 from .models import Livro
 
-from rolepermissions.checkers import has_permission, has_object_permission
-
 
 @login_required
 def lista_livros(request):
@@ -57,15 +55,23 @@ def editar_livro(request, livro_id):
     livro = get_object_or_404(Livro, id=livro_id)
 
     if request.method == 'POST':
-        form = LivroForm(request.POST, instance=livro)
+        
         user = request.user
-        
-        if has_permission(user, 'editar_qualquer_livro') or (has_permission(user, 'editar_proprio_livro') and Livro_Usuario.objects.filter(livro=livro, autor=user).exists()):
-            pass
-        
-        else:
-            messages.error(request, 'Você não tem permissão para editar este livro.')
-            return redirect('livros:lista')
+
+    # 1. O usuário tem a permissão global? (Ex: Administrador)
+    tem_permissao_qualquer = user.has_perm('livros.editar_qualquer_livro')
+    
+    # 2. O usuário tem a permissão de próprio E é o autor do livro?
+    # Verificamos na tabela LivroUsuario que está no seu UML
+    e_autor = Livro_Usuario.objects.filter(livro=livro, autor=user).exists()
+    tem_permissao_proprio = user.has_perm('livros.editar_proprio_livro') and e_autor
+
+    if not (tem_permissao_qualquer or tem_permissao_proprio):
+        messages.error(request, "Você não tem permissão para editar este livro.")
+        # Mude 'livros:lista' para o nome real da URL para onde ele deve voltar
+        return redirect('livros:lista') 
+    
+        form = LivroForm(request.POST, instance=livro)
 
         if form.is_valid():
             form.save()
@@ -127,20 +133,28 @@ def editar_livro(request, livro_id):
 @login_required
 def deletar_livro(request, livro_id):
     livro = get_object_or_404(Livro, id=livro_id)
-    user = request.user
     
     if request.method == 'POST':
-        if has_permission(user, 'excluir_qualquer_livro') or (has_permission(user, 'excluir_proprio_livro') and Livro_Usuario.objects.filter(livro=livro, autor=user).exists()):
-            livro.delete()
-            messages.success(request, 'Livro deletado com sucesso!')
-        else:
-            messages.error(request, 'Você não tem permissão para deletar este livro.')
-        return redirect('livros:lista')
+        
+        user = request.user
 
-    return render(
-        request,
-        'form/deletar_livro.html',
-        {
-            'livro': livro
-        }
-    )
+    # 1. O usuário tem a permissão global? (Ex: Administrador)
+    tem_permissao_qualquer = user.has_perm('livros.excluir_qualquer_livro')
+    
+    # 2. O usuário tem a permissão de próprio E é o autor do livro?
+    # Verificamos na tabela LivroUsuario que está no seu UML
+    e_autor = Livro_Usuario.objects.filter(livro=livro, autor=user).exists()
+    tem_permissao_proprio = user.has_perm('livros.excluir_proprio_livro') and e_autor
+
+    if not (tem_permissao_qualquer or tem_permissao_proprio):
+        messages.error(request, "Você não tem permissão para excluir este livro.")
+        # Mude 'livros:lista' para o nome real da URL para onde ele deve voltar
+        return redirect('livros:lista') 
+
+        return render(
+            request,
+            'form/deletar_livro.html',
+            {
+                'livro': livro
+            }
+        )

@@ -5,6 +5,8 @@ from avaliacao.forms import AvaliacaoForm
 from avaliacao.models import Avaliacao
 from rolepermissions.checkers import has_permission, has_object_permission
 
+from livro_usuario.models import Livro_Usuario
+
 @login_required
 def register_avaliacao(request):
     if request.method == 'POST':
@@ -40,16 +42,21 @@ def editar_avaliacao(request, avaliacao_id):
         Avaliacao,
         id=avaliacao_id
     )
-    user = request.user
 
     if request.method == 'POST':
-        if has_permission(user, 'editar_qualquer_avaliacao'):
-            pass
-        elif has_permission(user, 'editar_proprio_avaliacao') and has_object_permission('gerenciar_avaliacao', user, avaliacao):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para editar essa avaliação.')
-            return redirect('livros:lista')
+        user = request.user
+
+        tem_permissao_qualquer = user.has_perm('avaliacao.editar_qualquer_avaliacao')
+        
+        # Navegação UML: Avaliacao -> Livro -> LivroUsuario
+        e_autor_do_livro = Livro_Usuario.objects.filter(livro=avaliacao.livro, autor=user).exists()
+        
+        tem_permissao_proprio = user.has_perm('avaliacao.editar_proprio_avaliacao') and e_autor_do_livro
+
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+            messages.error(request, "Você não tem permissão para editar esta avaliação.")
+            return redirect('home')
+        
         form = AvaliacaoForm(
             request.POST,
             instance=avaliacao
@@ -86,16 +93,21 @@ def deletar_avaliacao(request, avaliacao_id):
         Avaliacao,
         id=avaliacao_id
     )
-    user = request.user
 
     if request.method == 'POST':
-        if has_permission(user, 'excluir_qualquer_avaliacao'):
-            pass
-        elif has_permission(user, 'excluir_proprio_avaliacao') and has_object_permission('gerenciar_colecao', user, avaliacao):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para excluir essa avaliação.')
-            return redirect('livros:lista')
+        user = request.user
+        
+        tem_permissao_qualquer = user.has_perm('avaliacao.excluir_qualquer_avaliacao')
+                
+                # Navegação UML: Avaliacao -> Livro -> LivroUsuario
+        e_autor_do_livro = Livro_Usuario.objects.filter(livro=avaliacao.livro, autor=user).exists()
+                
+        tem_permissao_proprio = user.has_perm('avaliacao.excluir_proprio_avaliacao') and e_autor_do_livro
+        
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+                    messages.error(request, "Você não tem permissão para excluir esta avaliação.")
+                    return redirect('home')
+                
         avaliacao.delete()
 
         messages.success(

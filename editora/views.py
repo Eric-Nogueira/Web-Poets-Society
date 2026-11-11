@@ -33,15 +33,19 @@ def register_editora(request):
 @login_required
 def editar_editora(request, editora_id):
     editora = get_object_or_404(Editora, id=editora_id)
-    user = request.user
 
     if request.method == 'POST':
-        if has_permission(user, 'editar_qualquer_editora'):
-            pass
-        elif has_permission(user, 'editar_proprio_editora') and has_object_permission('gerenciar_editora', user, editora):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para editar este perfil.')
+        user = request.user
+
+        tem_permissao_qualquer = user.has_perm('editora.editar_qualquer_editora')
+    
+    # Navegação UML: Editora -> responsavel
+        e_responsavel = editora.responsavel == user
+    
+        tem_permissao_proprio = user.has_perm('editora.editar_proprio_editora') and e_responsavel
+
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+            messages.error(request, "Você não é o responsável por esta editora e não pode editá-la.")
             return redirect('home')
         form = EditoraForm(
             request.POST,
@@ -67,16 +71,20 @@ def editar_editora(request, editora_id):
 @login_required
 def deletar_editora(request, editora_id):
     editora = get_object_or_404(Editora, id=editora_id)
-    user = request.user
 
     if request.method == 'POST':
-        if has_permission(user, 'excluir_qualquer_editora'):
-            pass
-        elif has_permission(user, 'excluir_proprio_editora') and has_object_permission('gerenciar_editora', user, editora):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para excluir este perfil.')
-            return redirect('home')
+        user = request.user
+        
+        tem_permissao_qualquer = user.has_perm('editora.excluir_qualquer_editora')
+            
+            # Navegação UML: Editora -> responsavel
+        e_responsavel = editora.responsavel == user
+            
+        tem_permissao_proprio = user.has_perm('editora.excluir_proprio_editora') and e_responsavel
+        
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+                    messages.error(request, "Você não é o responsável por esta editora e não pode excluí-la.")
+                    return redirect('home')
         editora.delete()
         return redirect('home')
 

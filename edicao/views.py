@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 
+from livro_usuario.models import Livro_Usuario
+
 from .forms import EdicaoForm
 from .models import Edicao
 
@@ -38,17 +40,20 @@ def register_edicao(request):
 def editar_edicao(request, edicao_id):
     edicao = get_object_or_404(Edicao, id=edicao_id)
     user = request.user
-    
-    if has_permission(user, 'editar_qualquer_edicao'):
-        pass
-    
-    elif has_permission(user, 'editar_proprio_edicao') and has_object_permission('gerenciar_edicao', user, edicao):
-        pass
-    
-    else:
-        messages.error(request, 'Você não tem permissão para editar essa edição.')
-        return redirect('livros:lista')
 
+    tem_permissao_qualquer = user.has_perm('edicao.editar_qualquer_edicao')
+    
+    # Navegação UML: Edicao -> Livro -> LivroUsuario OU Edicao -> Editora -> responsavel
+    e_autor_do_livro = Livro_Usuario.objects.filter(livro=edicao.livro, autor=user).exists()
+    e_responsavel_editora = edicao.editora and edicao.editora.responsavel == user
+    
+    tem_permissao_proprio = user.has_perm('edicao.editar_proprio_edicao') and (e_autor_do_livro or e_responsavel_editora)
+
+    if not (tem_permissao_qualquer or tem_permissao_proprio):
+        messages.error(request, "Você não tem permissão para editar esta edição.")
+        return redirect('home') # Ajuste para a URL correta
+    
+    
     if request.method == 'POST':
         form = EdicaoForm(
             request.POST,
@@ -75,15 +80,22 @@ def editar_edicao(request, edicao_id):
 @login_required
 def deletar_edicao(request, edicao_id):
     edicao = get_object_or_404(Edicao, id=edicao_id)
-    user = request.user
     
-    if request.method == 'POST':
-        if has_permission(user, 'excluir_proprio_edicao') or (has_permission(user, 'excluir_propria_edicao') and has_object_permission('gerenciar_edicao', user, edicao)):
-            edicao.delete()
-        else:
-            messages.error(request, 'Você não tem permissão para deletar essa edição.')
+    if request.method == 'POST': 
+        user = request.user
         
-        return redirect('home')
+        tem_permissao_qualquer = user.has_perm('edicao.excluir_qualquer_edicao')
+            
+            # Navegação UML: Edicao -> Livro -> LivroUsuario OU Edicao -> Editora -> responsavel
+        e_autor_do_livro = Livro_Usuario.objects.filter(livro=edicao.livro, autor=user).exists()
+        e_responsavel_editora = edicao.editora and edicao.editora.responsavel == user
+            
+        tem_permissao_proprio = user.has_perm('edicao.excluir_proprio_edicao') and (e_autor_do_livro or e_responsavel_editora)
+        
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+                messages.error(request, "Você não tem permissão para deletar esta edição.")
+                return redirect('home')     
+        edicao.delete()
 
     return render(
         request,

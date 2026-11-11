@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
+from livro_usuario.models import Livro_Usuario
 from livros.models import Livro
 from .models import Capitulo
 from .forms import CapituloForm
@@ -44,17 +45,22 @@ def editar_capitulo(request, capitulo_id):
         Capitulo,
         id=capitulo_id
     )
-    user = request.user
 
     if request.method == 'POST':
-        if has_permission(user, 'editar_qualquer_capitulo'):
-            pass
         
-        elif has_permission(user, 'editar_qualquer_capitulo') and has_object_permission('gerenciar_capitulo', user, capitulo):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para editar esse capítulo.')
-            return redirect('livros:lista')
+        user = request.user
+
+        tem_permissao_qualquer = user.has_perm('capitulo.editar_qualquer_capitulo')
+        
+        # Navegação UML: Capitulo -> Livro -> LivroUsuario
+        e_autor_do_livro = Livro_Usuario.objects.filter(livro=capitulo.livro, autor=user).exists()
+        
+        tem_permissao_proprio = user.has_perm('capitulo.editar_proprio_capitulo') and e_autor_do_livro
+
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+            messages.error(request, "Você não tem permissão para editar capítulos deste livro.")
+            return redirect('home')
+
             
         form = CapituloForm(
             request.POST,
@@ -95,19 +101,22 @@ def deletar_capitulo(request, capitulo_id):
         Capitulo,
         id=capitulo_id
     )
-    user = request.user
 
     livro_id = capitulo.livro.id
 
     if request.method == 'POST':
-        if has_permission(user, 'excluir_qualquer_capitulo'):
-            pass
+        user = request.user
         
-        elif has_permission(user, 'excluir_proprio_capitulo') and has_object_permission('gerenciar_capitulo', user, capitulo):
-            pass
-        else:
-            messages.error(request, 'Você não tem permissão para excluir esse capítulo.')
-            return redirect('livros:lista')
+        tem_permissao_qualquer = user.has_perm('capitulo.excluir_qualquer_capitulo')
+                
+                # Navegação UML: Capitulo -> Livro -> LivroUsuario
+        e_autor_do_livro = Livro_Usuario.objects.filter(livro=capitulo.livro, autor=user).exists()
+                
+        tem_permissao_proprio = user.has_perm('capitulo.excluir_proprio_capitulo') and e_autor_do_livro
+        
+        if not (tem_permissao_qualquer or tem_permissao_proprio):
+                    messages.error(request, "Você não tem permissão para excluit capítulos deste livro.")
+                    return redirect('home')
         capitulo.delete()
 
         messages.success(
